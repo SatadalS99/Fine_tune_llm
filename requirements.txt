@@ -1,0 +1,22 @@
+# ── Fine-tuning ──────────────────────────────────────────────
+unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git
+bitsandbytes>=0.43.0
+peft>=0.10.0
+trl>=0.8.6
+accelerate>=0.30.0
+datasets>=2.18.0
+transformers>=4.40.0
+torch>=2.1.0
+
+# ── UI ───────────────────────────────────────────────────────
+gradio>=4.26.0
+
+# ── GCP Deployment ───────────────────────────────────────────
+google-cloud-aiplatform>=1.49.0
+google-cloud-storage>=2.16.0
+
+# ── General ──────────────────────────────────────────────────
+pandas>=2.0.0
+sentencepiece
+fastapi
+uvicorn[standard]
