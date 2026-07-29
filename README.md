@@ -1,4 +1,4 @@
-# 💰 Phi-3 Mini Personal Finance Assistant
+#  Phi-3 Mini Personal Finance Assistant
 
 Fine-tune Microsoft's **Phi-3 Mini (3.8B)** on personal finance Q&A data using QLoRA,
 evaluate it, merge the adapter, launch a Gradio chat UI, and deploy to **GCP Vertex AI**.
@@ -103,30 +103,8 @@ Deploy (GPU: g2-standard-4 + NVIDIA_L4 | CPU: n1-standard-8)
 Test predictions
       ↓
 ⚠️  Teardown when done (stops billing)
+
 ```
-
-### GCP Cost Reference
-
-| Option | Machine | Cost/hr | Notes |
-|---|---|---|---|
-| L4 GPU | g2-standard-4 | ~$0.80/hr | Fastest, needs quota |
-| T4 GPU | n1-standard-4 | ~$0.54/hr | Good balance, needs quota |
-| CPU | n1-standard-8 | ~$0.38/hr | Always available, ~20-30s/response |
-
-> ⚠️ **Important:** GCP charges ~$7/day minimum while any endpoint is live.
-> Always delete the endpoint when finished.
-
-### GPU Quota
-
-New GCP projects start with **zero GPU quota** for Vertex AI.
-To request quota:
-1. Go to `console.cloud.google.com/apis/api/aiplatform.googleapis.com/quotas`
-2. Search `Custom model serving`
-3. Request 1 GPU for `us-central1`
-
-Use **CPU deployment** while waiting for quota approval.
-
----
 
 ## 💬 Evaluation Scoring Guide
 
