@@ -3,29 +3,34 @@
 Fine-tune Microsoft's **Phi-3 Mini (3.8B)** on personal finance Q&A data using QLoRA,
 evaluate it, merge the adapter, launch a Gradio chat UI, and deploy to **GCP Vertex AI**.
 
+> ✅ **Successfully deployed to GCP Vertex AI** — custom FastAPI/Docker container, CPU serving,
+> live endpoint answering finance questions. A free **Hugging Face** demo path is also included.
+
 ---
 
-##  Repository Structure
+## Repository Structure
 
 ```
 phi3-finance/
 ├── main.py                              ← Full pipeline with GCP deployment
-├── main_no_gcp.py                       ← Training + Gradio UI only (no GCP)
 ├── phi3_finance_caller.ipynb            ← Notebook for main.py (Sections 1–10, GCP)
-├── phi3_finance_caller_no_gcp.ipynb     ← Notebook for main_no_gcp.py (Sections 1–9)
 ├── phi3_finance_huggingface.ipynb       ← Hugging Face deployment (Section 11)
 ├── personal_finance_qa.csv              ← Your training data (400+ Q&A pairs) ← YOU PROVIDE
-├── docs/
-│   ├── gcp_deployment_debugging_log.pdf ← Full record of every error + fix
-│   └── huggingface_deployment_guide.pdf ← Step-by-step HF guide
 ├── requirements.txt
 ├── .gitignore
 └── README.md
 ```
 
 > **Which files to use?**
-> - Just training + Gradio UI → `main_no_gcp.py` + `phi3_finance_caller_no_gcp.ipynb`
-> - Full pipeline with cloud deployment → `main.py` + `phi3_finance_caller.ipynb`
+> - Full pipeline with GCP cloud deployment → `main.py` + `phi3_finance_caller.ipynb`
+> - GCP deployment → `phi3_finance_huggingface.ipynb`
+
+> **Note on generated files:** Running the notebook creates several large artifacts —
+> the merged model (`phi3-finance-merged/`, ~7.6 GB), LoRA adapters, training checkpoints,
+> the cleaned dataset, and the serving container files (`serving/`). These are **not** in
+> the repo — they're excluded by `.gitignore` because they're regenerated on every run and
+> far exceed GitHub's file-size limits. Clone the repo, run the notebook, and they rebuild
+> automatically. You commit the recipe, not the output.
 
 ---
 
@@ -33,25 +38,25 @@ phi3-finance/
 
 1. Open the notebook in [Google Colab](https://colab.research.google.com)
 2. Set runtime to **GPU (A100 or T4)**: `Runtime → Change runtime type → GPU`
-3. Upload `main.py` (or `main_no_gcp.py`) and `personal_finance_qa.csv` to Colab
+3. Upload `main.py` and `personal_finance_qa.csv` to Colab
 4. Run the session start cell to import, then run top to bottom
 
 ---
 
 ## Pipeline Overview
 
-| Section | What happens | Est. time | In no-GCP version |
-|---|---|---|---|
-| **1 – Setup** | GPU check, install libraries | 5 min | ✅ |
-| **2 – Model** | Load Phi-3 Mini in 4-bit + apply LoRA adapters | 2 min | ✅ |
-| **3 – Dataset** | Load CSV, format into Phi-3 chat template | 1 min | ✅ |
-| **4 – Train v1** | Fine-tune for 3 epochs | 30–60 min | ✅ |
-| **5 – Inference** | Single + multi-turn chat | instant | ✅ |
-| **6 – Evaluate** | 30-prompt evaluation, manual 0–2 scoring | 15 min | ✅ |
-| **7 – Retrain v2** | Fix failed questions, retrain on improved data | 30–45 min | ✅ |
-| **8 – Merge** | Merge LoRA adapter into base model | 5 min | ✅ |
-| **9 – Gradio UI** | Launch shareable chat UI (public link 72hrs) | 1 min | ✅ |
-| **10 – GCP** | Deploy to Vertex AI (CPU or GPU) | 15–20 min | ✅ |
+| Section | What happens | Est. time |
+|---|---|---|
+| **1 – Setup** | GPU check, install libraries | 5 min |
+| **2 – Model** | Load Phi-3 Mini in 4-bit + apply LoRA adapters | 2 min |
+| **3 – Dataset** | Load CSV, format into Phi-3 chat template | 1 min |
+| **4 – Train v1** | Fine-tune for 3 epochs | 30–60 min |
+| **5 – Inference** | Single + multi-turn chat | instant |
+| **6 – Evaluate** | 30-prompt evaluation, manual 0–2 scoring | 15 min |
+| **7 – Retrain v2** | Fix failed questions, retrain on improved data | 30–45 min |
+| **8 – Merge** | Merge LoRA adapter into base model | 5 min |
+| **9 – Gradio UI** | Launch shareable chat UI (public link 72hrs) | 1 min |
+| **10 – GCP** | Deploy to Vertex AI (CPU) | 15–20 min |
 
 ---
 
@@ -174,8 +179,8 @@ Teardown — stops billing
 | Option | Machine | Cost/hr | Response time | Quota needed |
 |---|---|---|---|---|
 | **CPU** ← recommended | n1-standard-8 | ~$0.38 | ~20-30s | ❌ None |
-|  T4 GPU  | n1-standard-4 | ~$0.54 | ~2s | ✅ Must request |
-| A100 GPU | g2-standard-4 | ~$0.80 | ~1s | ✅ Must request |
+| T4 GPU | n1-standard-4 | ~$0.54 | ~2s | ✅ Must request |
+| L4 GPU | g2-standard-4 | ~$0.80 | ~1s | ✅ Must request |
 
 > GCP charges ~$7/day minimum while any endpoint is live — even with zero traffic.
 > Always call `undeploy_and_delete()` when finished.
@@ -258,7 +263,7 @@ If below 75%, add fixes in Section 7 and retrain.
 
 ---
 
-## GCP Vertex AI Deployment — What Actually Made It Work
+## GCP Vertex AI Deployment 
 
 Deploying a 7.6 GB merged model to Vertex AI via a **custom Docker container** took several
 iterations. These are the fixes that matter — bake them all in or the container fails silently:
