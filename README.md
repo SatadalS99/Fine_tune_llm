@@ -174,8 +174,8 @@ Teardown — stops billing
 | Option | Machine | Cost/hr | Response time | Quota needed |
 |---|---|---|---|---|
 | **CPU** ← recommended | n1-standard-8 | ~$0.38 | ~20-30s | ❌ None |
-| T4 GPU | n1-standard-4 | ~$0.54 | ~2s | ✅ Must request |
-| L4 GPU | g2-standard-4 | ~$0.80 | ~1s | ✅ Must request |
+|  T4 GPU  | n1-standard-4 | ~$0.54 | ~2s | ✅ Must request |
+| A100 GPU | g2-standard-4 | ~$0.80 | ~1s | ✅ Must request |
 
 > GCP charges ~$7/day minimum while any endpoint is live — even with zero traffic.
 > Always call `undeploy_and_delete()` when finished.
