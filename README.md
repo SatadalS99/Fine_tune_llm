@@ -51,7 +51,7 @@ phi3-finance/
 | **7 – Retrain v2** | Fix failed questions, retrain on improved data | 30–45 min | ✅ |
 | **8 – Merge** | Merge LoRA adapter into base model | 5 min | ✅ |
 | **9 – Gradio UI** | Launch shareable chat UI (public link 72hrs) | 1 min | ✅ |
-| **10 – GCP** | Deploy to Vertex AI (CPU or GPU) | 15–20 min | ❌ |
+| **10 – GCP** | Deploy to Vertex AI (CPU or GPU) | 15–20 min | ✅ |
 
 ---
 
